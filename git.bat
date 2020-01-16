@@ -1,0 +1,1 @@
+@docker run -ti --rm -v %USERPROFILE%:/root -v %cd%:/git alpine/git %*
