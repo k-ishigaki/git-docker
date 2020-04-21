@@ -1,12 +1,8 @@
 FROM alpine
 LABEL maintainer="Kazuki Ishigaki<k-ishigaki@frontier.hokudai.ac.jp>"
 
-# may be override when exec container
-ENV USER_SPEC 0:0
-
-RUN apk add --update bash git less su-exec && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm /var/cache/apk/*
+ARG EXTRA_PACKAGES="nvim"
+RUN apk add --no-cache bash git git-perl less ${EXTRA_PACKAGES} su-exec
 
 # install git-subrepo
 SHELL [ "/bin/bash", "-c" ]
@@ -17,8 +13,19 @@ ENV BASH_ENV ~/.bashrc
 # allow normal user to use /root directory
 RUN chmod +rx ${HOME}
 
-# read bashrc when docker run and change userspec
-RUN echo 'exec su-exec ${USER_SPEC} bash -c "export HOME=${HOME} && git $*"' > entrypoint.sh
-ENTRYPOINT [ "bash", "/entrypoint.sh"  ]
+COPY .gitconfig /root/.gitconfig
 
-WORKDIR /git
+RUN echo 'export HOME=/root >> .profile'
+ENV USER_ID 0
+ENV GROUP_ID 0
+RUN { \
+	echo '#!/bin/bash -e'; \
+	echo 'if [ ${USER_ID} -ne 0 ]; then'; \
+	echo '    addgroup -g ${GROUP_ID} -S group'; \
+	echo '    adduser -h /root -G group -S -D -H -u ${USER_ID} user'; \
+	echo 'fi'; \
+	echo 'exec su-exec ${USER_ID}:${GROUP_ID} "$@"'; \
+	} > /entrypoint && chmod +x /entrypoint
+ENTRYPOINT [ "/entrypoint" ]
+
+CMD ["git"]
