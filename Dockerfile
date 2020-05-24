@@ -14,6 +14,10 @@ RUN chmod +rx ${HOME}
 
 COPY .gitconfig /root/.gitconfig
 
+ENV GIT_SUBREPO_ROOT /git-subrepo
+ENV MANPATH /git-subrepo/man:
+ENV PATH /git-subrepo/lib:$PATH
+
 RUN echo 'export HOME=/root >> .profile'
 ENV USER_ID 0
 ENV GROUP_ID 0
