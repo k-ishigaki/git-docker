@@ -1,8 +1,7 @@
 FROM alpine
 LABEL maintainer="Kazuki Ishigaki<k-ishigaki@frontier.hokudai.ac.jp>"
 
-ARG EXTRA_PACKAGES="nvim"
-RUN apk add --no-cache bash git git-perl less su-exec ${EXTRA_PACKAGES}
+RUN apk add --no-cache bash git git-perl less neovim su-exec
 
 # install git-subrepo
 SHELL [ "/bin/bash", "-c" ]
