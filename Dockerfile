@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.11
 LABEL maintainer="Kazuki Ishigaki<k-ishigaki@frontier.hokudai.ac.jp>"
 
 RUN apk add --no-cache bash git git-perl less neovim su-exec
