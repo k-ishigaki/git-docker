@@ -22,13 +22,13 @@ RUN echo 'export HOME=/root >> .profile'
 ENV USER_ID 0
 ENV GROUP_ID 0
 RUN { \
-	echo '#!/bin/bash -e'; \
-	echo 'if [ -z "`getent passwd ${USER_ID}`" ]; then'; \
-	echo '    addgroup -g ${GROUP_ID} -S group'; \
-	echo '    adduser -h /root -G group -S -D -H -u ${USER_ID} user'; \
-	echo 'fi'; \
-	echo 'exec su-exec ${USER_ID}:${GROUP_ID} "$@"'; \
-	} > /entrypoint && chmod +x /entrypoint
+    echo '#!/bin/bash -e'; \
+    echo 'if [ -z "`getent passwd ${USER_ID}`" ]; then'; \
+    echo '    addgroup -g ${GROUP_ID} -S group'; \
+    echo '    adduser -h /root -G group -S -D -H -u ${USER_ID} user'; \
+    echo 'fi'; \
+    echo 'exec su-exec ${USER_ID}:${GROUP_ID} "$@"'; \
+    } > /entrypoint && chmod +x /entrypoint
 ENTRYPOINT [ "/entrypoint" ]
 
 CMD ["git"]
